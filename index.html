@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anamnese PSI — Protótipo</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6b4fa8">
+<link rel="icon" href="icons/icon-192.svg">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnese">
+<style>
+:root{
+  --bg:#f6f4fa; --card:#ffffff; --ink:#2b2540; --muted:#6c6684; --line:#e4e0ee;
+  --pri:#6b4fa8; --pri-soft:#efe9fa; --ok:#1f8a5b; --ok-soft:#e3f4ec;
+  --warn:#b7791f; --warn-soft:#fdf3e1; --bad:#9b9bb0; --bad-soft:#f0f0f5;
+  --risk:#c0392b; --risk-soft:#fdecea; --radius:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+header{background:var(--pri);color:#fff;padding:16px 20px}
+header h1{margin:0;font-size:1.15rem;font-weight:650}
+header p{margin:2px 0 0;font-size:.85rem;opacity:.85}
+main{max-width:860px;margin:0 auto;padding:16px}
+.stepper{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:4px 0 16px}
+.stepper button{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:6px 2px;font-size:.72rem;line-height:1.2;color:var(--muted);cursor:pointer;min-width:0}
+.stepper button b{display:block;font-size:.95rem}
+.stepper button.on{border-color:var(--pri);background:var(--pri-soft);color:var(--pri);font-weight:650}
+.stepper button.done{border-color:var(--ok);color:var(--ok)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:1.1rem}
+.card h3{margin:16px 0 6px;font-size:.98rem;color:var(--pri)}
+.hint{color:var(--muted);font-size:.88rem;margin:0 0 12px}
+label.f{display:block;font-size:.85rem;font-weight:600;margin:10px 0 4px}
+input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.gate{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.gate:last-child{border-bottom:0}
+.gate .q{flex:1;font-size:.95rem}
+.gate .q small{display:block;color:var(--muted);font-size:.78rem}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-shrink:0}
+.seg button{border:0;background:#fff;padding:8px 12px;font-size:.85rem;cursor:pointer;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--pri);color:#fff}
+.seg button.on[data-v=sim]{background:var(--pri);color:#fff}
+.seg button.on[data-v=talvez]{background:var(--warn-soft);color:var(--warn);font-weight:650}
+.seg button.on[data-v=nao]{background:var(--bad-soft);color:var(--ink)}
+.gate.risk .q{color:var(--risk);font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 10px;font-size:.8rem;cursor:pointer;color:var(--muted)}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.chip.ok{border-color:var(--ok);color:var(--ok)}
+.chip.on.ok{background:var(--ok);color:#fff}
+.block{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.block .bt{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:.92rem;margin-bottom:6px}
+.count{font-size:.8rem;padding:2px 8px;border-radius:999px;background:var(--bad-soft);color:var(--muted);white-space:nowrap;align-self:flex-start}
+.count.met{background:var(--ok-soft);color:var(--ok)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:7px 4px;border-radius:8px;cursor:pointer;font-size:.92rem}
+.chk:hover{background:var(--pri-soft)}
+.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--pri);flex-shrink:0}
+.chk.riskitem{color:var(--risk)}
+.req{background:var(--pri-soft);border-color:transparent}
+.flag{background:var(--warn-soft);border-color:transparent}
+.ref{font-size:.8rem;color:var(--muted)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.btn{border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;background:var(--pri);color:#fff}
+.btn.sec{background:#fff;color:var(--pri);border:1px solid var(--pri)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.alert{border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.92rem}
+.alert.risk{background:var(--risk-soft);color:var(--risk);border:1px solid #f3c1bb}
+.alert.info{background:var(--pri-soft);color:var(--ink)}
+.res{border-left:6px solid var(--bad);}
+.res.s3{border-left-color:var(--ok)} .res.s2{border-left-color:var(--pri)} .res.s1{border-left-color:var(--warn)}
+.badge{display:inline-block;font-size:.78rem;font-weight:650;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.s3 .badge{background:var(--ok-soft);color:var(--ok)} .s2 .badge{background:var(--pri-soft);color:var(--pri)}
+.s1 .badge{background:var(--warn-soft);color:var(--warn)} .s0 .badge{background:var(--bad-soft);color:var(--muted)}
+.bar{height:8px;background:var(--bad-soft);border-radius:999px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--pri)}
+.s3 .bar i{background:var(--ok)}
+ul.mini{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+ul.mini li{margin:2px 0}
+.miss{color:var(--warn)}
+pre#rel{white-space:pre-wrap;background:#faf9fd;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.85rem;max-height:420px;overflow:auto}
+.legend{font-size:.84rem;color:var(--ink);background:var(--pri-soft);border-radius:10px;padding:10px 12px;margin:12px 0 4px}
+.legend span{display:block;color:var(--muted);margin-top:6px}
+.item{padding:12px 0;border-bottom:1px solid var(--line)}
+.item p{margin:0 0 8px;font-size:.95rem}
+.opts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 2px;cursor:pointer;color:var(--muted);font:inherit;font-size:.68rem;line-height:1.15;min-height:50px;min-width:0}
+.opt b{display:block;font-size:1.05rem;color:var(--ink)}
+.opt.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.opt.on b{color:#fff}
+.tag{display:block;width:fit-content;margin-top:4px;font-size:.72rem;font-weight:600;color:var(--pri);background:var(--pri-soft);border-radius:999px;padding:2px 8px}
+.dom{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.dom:last-child{border-bottom:0}
+.dom small{display:block;color:var(--muted);font-size:.78rem}
+.st{font-size:.74rem;font-weight:650;border-radius:999px;padding:2px 8px;white-space:nowrap;align-self:flex-start}
+.st.up{background:var(--warn-soft);color:var(--warn)} .st.ok{background:var(--bad-soft);color:var(--muted)}
+.st.na{border:1px dashed var(--line);color:var(--muted)} .st.risk{background:var(--risk-soft);color:var(--risk)}
+.alert.warn{background:var(--warn-soft);color:#7a4f10;border:1px solid #f1d9a8}
+.prog{font-size:.85rem;color:var(--muted);text-align:center;margin:12px 0 0}
+footer{max-width:860px;margin:0 auto;padding:4px 16px 30px;color:var(--muted);font-size:.78rem}
+.hidden{display:none}
+.arq-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.arq-bar .btn{min-height:44px}
+#statusArq{font-size:.82rem;color:var(--ok);margin:0 0 8px}
+#arquivo h3{margin:4px 0 8px}
+.salva{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.salva:last-child{border-bottom:0}
+.salva p{margin:0;font-size:.95rem;font-weight:650}
+.salva small{display:block;font-weight:400;color:var(--muted);font-size:.8rem;margin-top:2px}
+.salva .acts{display:flex;gap:8px;flex-shrink:0}
+.salva .acts .btn{padding:10px 14px;min-height:44px}
+.btn.apag{background:#fff;color:var(--risk);border:1px solid #f3c1bb}
+@media print{header,.stepper,.nav,.noprint,footer{display:none!important} body{background:#fff} .card{border:0}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Anamnese PSI — Protótipo</h1>
+  <p>Organização de informações para testes fictícios</p>
+</header>
+
+<main>
+  <div class="alert info noprint" id="aviso">
+    <b>Ferramenta de apoio clínico.</b> Ela organiza observações e indica hipóteses a investigar. Não emite diagnóstico: a conclusão é sempre da psicóloga. Os critérios aparecem resumidos; confirme no DSM-5 pela página indicada. Os dados ficam só neste aparelho, no navegador. Nada é enviado. Se os dados do navegador forem apagados, as anamneses somem.
+  </div>
+
+  <div class="card noprint" id="arquivo">
+    <div class="arq-bar">
+      <button class="btn" id="salvar">Salvar</button>
+      <button class="btn ghost" id="novaAnm">Nova anamnese</button>
+    </div>
+    <p id="statusArq" class="hidden"></p>
+    <h3>Anamneses salvas</h3>
+    <div id="listaSalvas"></div>
+  </div>
+
+  <nav class="stepper" id="stepper"></nav>
+  <section id="view"></section>
+</main>
+
+<footer>Desenvolvido por Gilson Bolivar · Desenvolvedor Digital. Páginas de referência: DSM-5, 5ª edição, Artmed, 2014.</footer>
+
+<script src="dados.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
