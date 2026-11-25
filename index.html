@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anamnese PSI — Protótipo</title>
+<title>Anamnese PSI — Apoio à Anamnese (DSM-5)</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6b4fa8">
-<link rel="icon" href="icons/icon-192.svg">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.svg">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../Virlene/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Anamnese">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnese PSI">
 <style>
 :root{
   --bg:#f6f4fa; --card:#ffffff; --ink:#2b2540; --muted:#6c6684; --line:#e4e0ee;
@@ -114,13 +115,43 @@ footer{max-width:860px;margin:0 auto;padding:4px 16px 30px;color:var(--muted);fo
 .salva .acts{display:flex;gap:8px;flex-shrink:0}
 .salva .acts .btn{padding:10px 14px;min-height:44px}
 .btn.apag{background:#fff;color:var(--risk);border:1px solid #f3c1bb}
-@media print{header,.stepper,.nav,.noprint,footer{display:none!important} body{background:#fff} .card{border:0}}
+textarea.curto{min-height:56px}
+details.sec{border:1px solid var(--line);border-radius:12px;margin:10px 0;padding:0 12px;background:#fff}
+details.sec[open]{padding-bottom:12px}
+details.sec>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 0;cursor:pointer;font-weight:650;font-size:.95rem;min-height:44px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary>span:first-child::before{content:"▸ ";color:var(--pri)}
+details.sec[open]>summary>span:first-child::before{content:"▾ "}
+details.riscosec{border-color:#f3c1bb}
+details.riscosec>summary{color:var(--risk)}
+.cont{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok);white-space:nowrap}
+.cont.vazio{background:var(--bad-soft);color:var(--muted);font-weight:500}
+.cont.alto{background:var(--risk);color:#fff}
+.seg button.on.rsim{background:var(--risk);color:#fff}
+details.det{margin:0 0 6px;padding:0 0 8px;border-bottom:1px solid var(--line);font-size:.88rem}
+details.det summary{cursor:pointer;color:var(--pri);padding:4px 0;min-height:32px}
+.crit{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 4px;border-bottom:1px dashed var(--line);font-size:.92rem}
+.crit:last-child{border-bottom:0}
+.crit .ct{flex:1}
+.crit.pres .ct{font-weight:600}
+.crit.ausn .ct{color:var(--muted);text-decoration:line-through}
+.crit.riskitem .ct{color:var(--risk)}
+.seg.mini button{padding:9px 10px;font-size:.8rem;min-height:40px}
+.seg.mini button.on[data-v=nao]{background:var(--bad-soft);color:var(--ink)}
+.si{color:var(--muted)}
+ul.mini li.nao{color:var(--risk)}
+p.nota{margin:6px 0 0;font-size:.88rem}
+.st.inc{background:var(--warn-soft);color:var(--warn);border:1px dashed var(--warn)}
+.item.falta p b{color:var(--warn)}
+.salva.atual p{color:var(--pri)}
+.alert.risk{font-size:.95rem}
+@media print{details.sec{border:0} header,.stepper,.nav,.noprint,footer{display:none!important} body{background:#fff} .card{border:0}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Anamnese PSI — Protótipo</h1>
-  <p>Organização de informações para testes fictícios</p>
+  <h1>Anamnese PSI</h1>
+  <p>Apoio à anamnese com hipóteses segundo os critérios do DSM-5</p>
 </header>
 
 <main>
@@ -132,6 +163,7 @@ footer{max-width:860px;margin:0 auto;padding:4px 16px 30px;color:var(--muted);fo
     <div class="arq-bar">
       <button class="btn" id="salvar">Salvar</button>
       <button class="btn ghost" id="novaAnm">Nova anamnese</button>
+      <button class="btn ghost" id="importar">Importar anamneses do Virlene</button>
     </div>
     <p id="statusArq" class="hidden"></p>
     <h3>Anamneses salvas</h3>
@@ -144,16 +176,6 @@ footer{max-width:860px;margin:0 auto;padding:4px 16px 30px;color:var(--muted);fo
 
 <footer>Desenvolvido por Gilson Bolivar · Desenvolvedor Digital. Páginas de referência: DSM-5, 5ª edição, Artmed, 2014.</footer>
 
-<script>window.__psiPartes=[];</script>
-<script src="parte-1.js"></script>
-<script src="parte-2.js"></script>
-<script src="parte-3.js"></script>
-<script src="parte-4.js"></script>
-<script src="parte-5.js"></script>
-<script src="parte-6.js"></script>
-<script src="parte-7.js"></script>
-<script src="parte-8.js"></script>
-<script src="parte-9.js"></script>
-<script>const b=atob(window.__psiPartes.join(''));const bytes=Uint8Array.from(b,c=>c.charCodeAt(0));const script=document.createElement('script');script.textContent=new TextDecoder().decode(bytes);document.body.appendChild(script);delete window.__psiPartes;</script>
+<script src="app.js"></script>
 </body>
 </html>
