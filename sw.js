@@ -1,7 +1,7 @@
 /* Guarda o programa no aparelho para abrir sem internet.
    Ao publicar uma versão nova, aumente o número abaixo. */
-const VERSAO = "anamnese-psi-v1";
-const ARQUIVOS = ["./", "./index.html", "./manifest.json",
+const VERSAO = "anamnese-psi-v2";
+const ARQUIVOS = ["./", "./index.html", "./parte-1.js", "./parte-2.js", "./parte-3.js", "./parte-4.js", "./parte-5.js", "./parte-6.js", "./parte-7.js", "./parte-8.js", "./parte-9.js", "./manifest.json",
   "./icons/icon-192.svg", "./icons/icon-512.svg", "./icons/maskable-512.svg", "./icons/apple-touch-icon.svg"];
 
 self.addEventListener("install", e => {
